@@ -1,0 +1,8 @@
+Flask>=3.0,<4
+flask-cors>=4.0,<7
+SQLAlchemy>=2.0,<3
+psycopg[binary]>=3.2,<4
+gunicorn>=22,<28
+numpy>=1.26,<3
+scipy>=1.12,<2
+nibabel>=5.2,<6
