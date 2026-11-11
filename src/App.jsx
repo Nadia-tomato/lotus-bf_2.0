@@ -10,9 +10,23 @@ import './App.css'
 export default function App () {
   const [query, setQuery] = useUrlQueryState('q')
 
+
   const handlePickTerm = useCallback((t) => {
-    setQuery((q) => (q ? `${q} ${t}` : t))
+    const term = t.replace(/^terms_abstract_tfidf__/, '').trim()
+    if (!term) return
+  
+    const formatted = term.includes(' ') ? `"${term}"` : term
+  
+    setQuery((q) => {
+      const current = q.trim()
+      if (!current) return formatted
+      if (/\b(AND|OR|NOT)$/i.test(current)) {
+        return `${current} ${formatted}`
+      }
+      return `${current} AND ${formatted}`
+    })
   }, [setQuery])
+
 
   // --- resizable panes state ---
   const gridRef = useRef(null)
