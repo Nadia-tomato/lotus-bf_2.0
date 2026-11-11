@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 
+// Display a readable term without changing the underlying Neurosynth key.
+const TERM_PREFIX = 'terms_abstract_tfidf__'
+const displayTerm = (term) => term.startsWith(TERM_PREFIX)
+  ? term.slice(TERM_PREFIX.length)
+  : term
+
 export function Terms ({ onPickTerm }) {
   const [terms, setTerms] = useState([])
   const [search, setSearch] = useState('')
@@ -32,7 +38,7 @@ export function Terms ({ onPickTerm }) {
   const filtered = useMemo(() => {
     const s = search.trim().toLowerCase()
     if (!s) return terms
-    return terms.filter(t => t.toLowerCase().includes(s))
+    return terms.filter(t => displayTerm(t).toLowerCase().includes(s) || t.toLowerCase().includes(s))
   }, [terms, search])
 
   return (
@@ -77,14 +83,14 @@ export function Terms ({ onPickTerm }) {
               {filtered.slice(0, 500).map((t, idx) => (
                 <li key={`${t}-${idx}`} className='terms__li'>
                   <a
-  href="#"
-  className='terms__name'
-  title={t}
-  aria-label={`Add term ${t}`}
-  onClick={(e) => { e.preventDefault(); onPickTerm?.(t); }}
->
-  {t}
-</a>
+                    href="#"
+                    className='terms__name'
+                    title={t}
+                    aria-label={`Add term ${displayTerm(t)}`}
+                    onClick={(e) => { e.preventDefault(); onPickTerm?.(t) }}
+                  >
+                    {displayTerm(t)}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -94,4 +100,3 @@ export function Terms ({ onPickTerm }) {
     </div>
   )
 }
-
